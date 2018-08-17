@@ -49,12 +49,13 @@
 
             // echo $animalSounds['cat'];
             
+            // if current page has a parent
             if ($theParent) {
               $findChildrenOf = $theParent;
             } else {
-              $findChildrenOf = get_the_ID();
+              $findChildrenOf = get_the_ID(); // if current page hasnt got a parent
             }
-
+            // making a list of nav items, based on the current page
             wp_list_pages(array(
               'title_li' => NULL,
               'child_of' => $findChildrenOf
