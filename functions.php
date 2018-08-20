@@ -13,8 +13,11 @@
   add_action('wp_enqueue_scripts', 'universityFiles');
 
   function universityFeatures() {
+    register_nav_menu('footerLocationOne', 'Footer Location One'); //to add menu to the backend
+    register_nav_menu('footerLocationTwo', 'Footer Location Two'); //to add menu to the backend
     add_theme_support('title-tag');
   }
 
+  // sfter_setup_theme is like lifecycle hook when something is done like Angulars ngOninit
   add_action('after_setup_theme', 'universityFeatures');
 
