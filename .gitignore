@@ -2,17 +2,32 @@ app/local.php
 
 # After your first big deploy and all of your files are already
 # on your web host you could uncomment the following items
-# app/wp-content/uploads/
-# app/wp-admin
-# app/wp-includes
+wp-content/uploads/
+wp-content/languages/
+wp-admin
+wp-includes
 
 # You could also list the indidivual WordPress system files that
 # live in the root of our folder, for example, here are just a few
-# app/index.php
-# app/license.txt
-# app/readme.html
-# app/wp-activate.php
-# app/wp-blog-header.php
+index.php
+license.txt
+readme.html
+wp-activate.php
+wp-blog-header.php
+.htaccess
+experiment.php
+wp-comments-post.php
+wp-config.php
+wp-config-sample.php
+wp-cron.php
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-trackback.php
+xmlrpc.php
 # so on and so forth
 
 
