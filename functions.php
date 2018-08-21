@@ -18,6 +18,8 @@
     add_theme_support('title-tag');
   }
 
-  // sfter_setup_theme is like lifecycle hook when something is done like Angulars ngOninit
+  // after_setup_theme is like lifecycle hook when something is done like Angulars ngOninit
   add_action('after_setup_theme', 'universityFeatures');
+
+
 
