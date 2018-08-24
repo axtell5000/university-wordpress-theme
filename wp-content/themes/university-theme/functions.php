@@ -21,5 +21,25 @@
   // after_setup_theme is like lifecycle hook when something is done like Angulars ngOninit
   add_action('after_setup_theme', 'universityFeatures');
 
+  // function to sort based on what url you are on, this is to run just before posts are gotten
+  function universityAdjustmentQueries($query) {
+    // if not in admin section of wordpress and on event archive
+    if (!is_admin() AND is_post_type_archive('event') AND $query->is_main_query()) {
+      $today = date('Ymd');  
+      $query->set('meta_key', 'event_date');
+      $query->set('orderby', 'meta_value_num');
+      $query->set('order', 'ASC');
+      $query->set('meta_query', array(
+        array(
+          'key' => 'event_date',
+          'compare' => '>=',
+          'value' => $today,
+          'type' => 'numeric'
+        )
+      ));
+    }
+    
+  }
 
+  add_action('pre_get_posts', 'universityAdjustmentQueries');
 
