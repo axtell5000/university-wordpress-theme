@@ -35,6 +35,7 @@
   <?php }
 
   function universityFiles() {
+    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=need own key', '1.0', microtime(), true);
     // microtime() is a trick for dealing with caching issues
     wp_enqueue_script('mainUniversityJs', get_theme_file_uri('/js/scripts-bundled.js'), NULL, microtime(), true);
     // loading a stylesheet
@@ -62,8 +63,12 @@
   // function to sort based on what url you are on, this is to run just before posts are gotten
   function universityAdjustmentQueries($query) {
 
-    if (!is_admin() AND is_post_type_archive('preogram') AND $query->is_main_query()) {
-      $query->set('orderby', 'titlr');
+    if (!is_admin() AND is_post_type_archive('campus') AND $query->is_main_query()) {
+      $query->set('posts_per_page', -1);
+    }
+
+    if (!is_admin() AND is_post_type_archive('program') AND $query->is_main_query()) {
+      $query->set('orderby', 'title');
       $query->set('order', 'ASC');
       $query->set('posts_per_page', -1);
     }
@@ -87,4 +92,12 @@
   }
 
   add_action('pre_get_posts', 'universityAdjustmentQueries');
+
+  function universityMapKey($key) {
+    $api['key'] = 'need own key';
+    $api['libraries'] = 'places';
+    return $api;
+  }
+
+  add_filter('acf/fields/google_map/api', 'universityMapKey');
 
