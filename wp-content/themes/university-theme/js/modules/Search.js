@@ -42,7 +42,7 @@ class Search {
           this.isSpinnerVisible = true;
         }
         // bind(this) - big NB , remember we are telling the new method that 'this' must point to the Search object - the old JavaScript quirk
-        this.typingTimer = setTimeout(this.getResults.bind(this), 2000);  // we use timer so we dont call the server on every keystroke
+        this.typingTimer = setTimeout(this.getResults.bind(this), 750);  // we use timer so we dont call the server on every keystroke
       } else { // if no value in search field, show nothing in results div and set isSpinnerVariable to false so we dont show it
         this.resultsDiv.html('');
         this.isSpinnerVisible = false;
@@ -54,8 +54,29 @@ class Search {
   }
 
   getResults() {
-    this.resultsDiv.html('Imagine real search results here');
-    this.isSpinnerVisible = false;
+    // using es6 fat arrow functions help the 'this' issue when refering to properties on the object.
+    // If we used a normal anonymous function, it would say x is undefined because 'this' is not pointing to the search object
+    // We could have uses the .bind(this) trick if we stayed with using the anonymous function way
+    
+    $.when(
+      // the 'universityData.root_url' part -works in conjunction with functions.php
+      $.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val()),
+      $.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val())
+      ).then((postsData, pagesData) => {
+      
+        let combinedResults = postsData[0].concat(pagesData[0]);
+        // this template literal (back ticks) help us with multiline html, please note older versions of IE and IE Edge dont support it, so be wary of this. We cant use if statements in template literals, but can use ternary like below
+        this.resultsDiv.html(`      
+          <h2 class="search-overlay__section-title">General Information</h2>
+          ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No general information matches that search.</p>'}
+          ${combinedResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a></li>`).join('')}
+          ${combinedResults.length ? '</ul>' : '' }
+        `);
+        this.isSpinnerVisible = false;
+    }, () => {
+      // this block is for the rror
+      this.resultsDiv.html('<p>Unexpected error, please try again</p>');
+    });
   }
 
   // Some keypress logi
@@ -75,6 +96,8 @@ class Search {
   openOverlay() {
     this.searchOverlay.addClass('search-overlay--active');
     $('body').addClass('body-no-scroll');
+    this.searchField.val('');
+    setTimeout(() => this.searchField.focus(), 301);
     this.isOverlayOpen = true;
   }
 

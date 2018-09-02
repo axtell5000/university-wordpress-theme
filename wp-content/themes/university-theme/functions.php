@@ -35,7 +35,7 @@
   <?php }
 
   function universityFiles() {
-    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=need key', '1.0', microtime(), true);
+    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=AIzaSyD6TbbxH1PAl040d0TXpCJTZasnxjR1YgM', '1.0', microtime(), true);
     // microtime() is a trick for dealing with caching issues
     wp_enqueue_script('mainUniversityJs', get_theme_file_uri('/js/scripts-bundled.js'), NULL, microtime(), true);
     // loading a stylesheet
@@ -44,6 +44,10 @@
     wp_enqueue_style('fontAwesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
     // microtime() is a trick for dealing with caching issues
     wp_enqueue_style('universityMainStyles', get_stylesheet_uri(), NULL, microtime());
+    // below code allows flexibilty of where these site files are hosted
+    wp_localize_script('mainUniversityJs', 'universityData', array(
+      'root_url' => get_site_url()
+    ));
   }
   // to add scripts, the second parameter is naming a function that must be called
   add_action('wp_enqueue_scripts', 'universityFiles');
@@ -95,7 +99,7 @@
   add_action('pre_get_posts', 'universityAdjustmentQueries');
 
   function universityMapKey($key) {
-    $api['key'] = 'need key';
+    $api['key'] = 'AIzaSyD6TbbxH1PAl040d0TXpCJTZasnxjR1YgM';
     $api['libraries'] = 'places';
     return $api;
   }
