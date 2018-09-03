@@ -15,7 +15,7 @@ function universityRegisterSearch() {
 function universitySearchResults($data) {
   $mainQuery = new WP_Query(array(
     'post_type' => array('post', 'page', 'professor', 'program', 'campus', 'event'),
-    's' => sanitize_text_field($data['term'])
+    's' => sanitize_text_field($data['term']) // search term to use
   ));
 
   $results = array(
@@ -26,6 +26,7 @@ function universitySearchResults($data) {
     'campuses' => array()
   );
 
+  // We are doing this to have more control of the data we pull. We are avoiding having to pull more data than needed
   while($mainQuery->have_posts()) {
     $mainQuery->the_post();
 
@@ -36,13 +37,16 @@ function universitySearchResults($data) {
       case 'page':
         array_push($results['generalInfo'], array(
           'title' => get_the_title(),
-          'permalink' => get_the_permalink()
+          'permalink' => get_the_permalink(),
+          'postType' => get_post_type(),
+          'authorName' => get_the_author()
         ));
         break;
       case 'professor':
         array_push($results['professors'], array(
           'title' => get_the_title(),
-          'permalink' => get_the_permalink()
+          'permalink' => get_the_permalink(),
+          'image' => get_the_post_thumbnail_url(0, 'professorLandscape') // params - which post you want to use (0 means current), the image size type
         ));
         break;
       case 'program':
@@ -68,6 +72,6 @@ function universitySearchResults($data) {
     
   }
 
-  return $results;
+  return $results; // once returned wordPress will automatically convert it to JSON
 
 }

@@ -46,7 +46,7 @@
   <?php }
 
   function universityFiles() {
-    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=AIzaSyD6TbbxH1PAl040d0TXpCJTZasnxjR1YgM', '1.0', microtime(), true);
+    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=need-key', '1.0', microtime(), true);
     // microtime() is a trick for dealing with caching issues
     wp_enqueue_script('mainUniversityJs', get_theme_file_uri('/js/scripts-bundled.js'), NULL, microtime(), true);
     // loading a stylesheet
@@ -64,13 +64,11 @@
   add_action('wp_enqueue_scripts', 'universityFiles');
 
   function universityFeatures() {
-    //register_nav_menu('footerLocationOne', 'Footer Location One'); //to add menu to the backend
-    //register_nav_menu('footerLocationTwo', 'Footer Location Two'); //to add menu to the backend
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
-    add_image_size('professorLandscape', 400, 260, true); // unique name. width, height. do you want to crop
+    add_image_size('professorLandscape', 400, 260, true);
     add_image_size('professorPortrait', 480, 650, true);
-    add_image_size('pageBanner', 1920, 350, true);
+    add_image_size('pageBanner', 1500, 350, true);
   }
 
   // after_setup_theme is like lifecycle hook when something is done like Angulars ngOninit
@@ -110,7 +108,7 @@
   add_action('pre_get_posts', 'universityAdjustmentQueries');
 
   function universityMapKey($key) {
-    $api['key'] = 'AIzaSyD6TbbxH1PAl040d0TXpCJTZasnxjR1YgM';
+    $api['key'] = 'need key';
     $api['libraries'] = 'places';
     return $api;
   }

@@ -57,26 +57,42 @@ class Search {
     // using es6 fat arrow functions help the 'this' issue when refering to properties on the object.
     // If we used a normal anonymous function, it would say x is undefined because 'this' is not pointing to the search object
     // We could have uses the .bind(this) trick if we stayed with using the anonymous function way
-    
-    // $when and $then - jquery below for handling promises. Mpre effiecient way to handle multiple calls to the server
-    $.when(
-      // the 'universityData.root_url' part -works in conjunction with functions.php
-      $.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val()),
-      $.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val())
-      ).then((postsData, pagesData) => {
-      
-        let combinedResults = postsData[0].concat(pagesData[0]);
-        // this template literal (back ticks) help us with multiline html, please note older versions of IE and IE Edge dont support it, so be wary of this. We cant use if statements in template literals, but can use ternary operator like below
-        this.resultsDiv.html(`      
+    $.getJSON(universityData.root_url + '/wp-json/university/v1/search?term=' + this.searchField.val() , (results) => {
+      this.resultsDiv.html(`
+      <div class="row">
+        <div class="one-third">
           <h2 class="search-overlay__section-title">General Information</h2>
-          ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No general information matches that search.</p>'}
-          ${combinedResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a> ${item.type === 'post' ? `by ${item.authorName}` : ''}</li>`).join('')}
-          ${combinedResults.length ? '</ul>' : '' }
-        `);
-        this.isSpinnerVisible = false;
-    }, () => {
-      // this block is for the rror
-      this.resultsDiv.html('<p>Unexpected error, please try again</p>');
+          ${results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No general information matches that search.</p>'}
+            ${results.generalInfo.map(item => `<li><a href="${item.permalink}">${item.title}</a> ${item.postType === 'post' ? `by ${item.authorName}` : ''}</li>`).join('')}
+          ${results.generalInfo.length ? '</ul>' : '' }
+        </div>
+        <div class="one-third">
+          <h2 class="search-overlay__section-title">Programs</h2>
+          ${results.programs.length ? '<ul class="link-list min-list">' : `<p>No programs match that search. <a href="${universityData.root_url}/programs">View all programs</a>.</p>`}
+            ${results.programs.map(item => `<li><a href="${item.permalink}">${item.title}</a></li>`).join('')}
+          ${results.programs.length ? '</ul>' : '' }
+          <h2 class="search-overlay__section-title">Professors</h2>
+          ${results.professors.length ? '<ul class="professor-cards">' : `<p>No professors match that search.</p>`}
+            ${results.professors.map(item => `
+            <li class="professor-card__list-item">
+              <a class="professor-card" href="${item.permalink}">
+                <img class="professor-card__image" src="<?php the_post_thumbnail_url('', 'professorLandscape'); ?>" >
+                <span class="professor-card__name"><?php the_title(); ?></span>
+              </a>
+            </li>
+            `).join('')}
+          ${results.professors.length ? '</ul>' : '' }
+        </div>
+        <div class="one-third">
+          <h2 class="search-overlay__section-title">Campuses</h2>
+          ${results.campuses.length ? '<ul class="link-list min-list">' : `<p>No campuses match that search. <a href="${universityData.root_url}/campuses">View all campuses</a>.</p>`}
+            ${results.campuses.map(item => `<li><a href="${item.permalink}">${item.title}</a></li>`).join('')}
+          ${results.campuses.length ? '</ul>' : '' }
+          <h2 class="search-overlay__section-title">Events</h2>
+        </div>
+      </div>    
+      `);
+      this.isSpinnerVisible = false;
     });
   }
 
