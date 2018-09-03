@@ -58,6 +58,7 @@ class Search {
     // If we used a normal anonymous function, it would say x is undefined because 'this' is not pointing to the search object
     // We could have uses the .bind(this) trick if we stayed with using the anonymous function way
     
+    // $when and $then - jquery below for handling promises. Mpre effiecient way to handle multiple calls to the server
     $.when(
       // the 'universityData.root_url' part -works in conjunction with functions.php
       $.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val()),
@@ -65,11 +66,11 @@ class Search {
       ).then((postsData, pagesData) => {
       
         let combinedResults = postsData[0].concat(pagesData[0]);
-        // this template literal (back ticks) help us with multiline html, please note older versions of IE and IE Edge dont support it, so be wary of this. We cant use if statements in template literals, but can use ternary like below
+        // this template literal (back ticks) help us with multiline html, please note older versions of IE and IE Edge dont support it, so be wary of this. We cant use if statements in template literals, but can use ternary operator like below
         this.resultsDiv.html(`      
           <h2 class="search-overlay__section-title">General Information</h2>
           ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No general information matches that search.</p>'}
-          ${combinedResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a></li>`).join('')}
+          ${combinedResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a> ${item.type === 'post' ? `by ${item.authorName}` : ''}</li>`).join('')}
           ${combinedResults.length ? '</ul>' : '' }
         `);
         this.isSpinnerVisible = false;

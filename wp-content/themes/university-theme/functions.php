@@ -1,6 +1,17 @@
 
 <?php 
-  // this file is used to interact with the WordPress system 
+  // this file is used to interact with the WordPress system
+  require get_theme_file_path('/includes/search-route.php');
+  
+  // here adding custom fields to the rest api
+  function universityCustomRest () {
+    // params - post type, name of new field , call back array
+    register_rest_field('post', 'authorName', array(
+      'get_callback' => function() { return get_the_author();}
+    ));
+  }
+
+  add_action('rest_api_init', 'universityCustomRest');
 
   function pageBanner($args = NULL) {
 
