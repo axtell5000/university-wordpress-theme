@@ -131,6 +131,7 @@ class Search {
     this.searchField.val('');
     setTimeout(() => this.searchField.focus(), 301);
     this.isOverlayOpen = true;
+    return false;
   }
 
    // close overlay and change property to false, and enable scrolling of bodyn
