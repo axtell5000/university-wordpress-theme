@@ -46,14 +46,14 @@
   <?php }
 
   function universityFiles() {
-    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=need-key', '1.0', microtime(), true);
+    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=AIzaSyD6TbbxH1PAl040d0TXpCJTZasnxjR1YgM', '1.0', microtime(), true);
     // microtime() is a trick for dealing with caching issues
     wp_enqueue_script('mainUniversityJs', get_theme_file_uri('/js/scripts-bundled.js'), NULL, microtime(), true);
     // loading a stylesheet
     wp_enqueue_style('googleFonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
 
     wp_enqueue_style('fontAwesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
-    // microtime() is a trick for dealing with caching issues
+    // microtime() is a trick for dealing with caching issues, these stylesheets are only for front end
     wp_enqueue_style('universityMainStyles', get_stylesheet_uri(), NULL, microtime());
     // below code allows flexibilty of where these site files are hosted
     wp_localize_script('mainUniversityJs', 'universityData', array(
@@ -108,10 +108,54 @@
   add_action('pre_get_posts', 'universityAdjustmentQueries');
 
   function universityMapKey($key) {
-    $api['key'] = 'need key';
+    $api['key'] = 'AIzaSyD6TbbxH1PAl040d0TXpCJTZasnxjR1YgM';
     $api['libraries'] = 'places';
     return $api;
   }
 
   add_filter('acf/fields/google_map/api', 'universityMapKey');
 
+  // Redirect subscribers from admin page to home page
+  add_action('admin_init', 'redirectSubscriberFront');
+
+  function redirectSubscriberFront() {
+    $currentUser = wp_get_current_user();
+
+    // checking if current user has only 1 role attributed to them and that role is just a 'subscriber'
+    if (count($currentUser->roles) == 1 AND $currentUser->roles[0] == 'subscriber') {
+      wp_redirect(site_url('/'));
+      exit;
+    }
+  }
+
+  // Removing top admin bar if user is a 'subscriber'
+  add_action('wp_loaded', 'noSubsAdminBar');
+
+  function noSubsAdminBar() {
+    $currentUser = wp_get_current_user();
+
+    // checking if current user has only 1 role attributed to them and that role is just a 'subscriber'
+    if (count($currentUser->roles) == 1 AND $currentUser->roles[0] == 'subscriber') {
+      show_admin_bar(false);
+    }
+  }
+
+  // Customize login screen
+  add_filter('login_headerurl', 'myHeaderUrl');
+
+  function myHeaderUrl() {
+    return esc_url(site_url('/'));
+  }
+
+  add_action('login_enqueue_scripts', 'myLoginCss');
+
+  function myLoginCss() {
+    wp_enqueue_style('universityMainStyles', get_stylesheet_uri(), NULL, microtime());
+    wp_enqueue_style('googleFonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+  }
+
+  add_filter('login_headertitle', 'myLoginTitle');
+
+  function myLoginTitle() {
+    return get_bloginfo('name');
+  }
