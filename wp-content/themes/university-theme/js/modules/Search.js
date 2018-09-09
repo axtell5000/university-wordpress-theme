@@ -115,7 +115,7 @@ class Search {
   keyPressDispatcher(event) {
     // console.log(event.keyCode);
     // checking if 's' is pressed and overlay is not already open or the user isnt focused on an actual input field
-    if (event.keyCode === 83 && !this.isOverlayOpen && !$('input', 'textarea').is(':focus')) {
+    if (event.keyCode === 83 && !this.isOverlayOpen && !$('input, textarea').is(':focus')) {
       this.openOverlay();      
     }
     // checking if 'esc' key is pressed and overlay is open
