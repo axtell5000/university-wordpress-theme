@@ -1,6 +1,8 @@
 
 <?php 
   // this file is used to interact with the WordPress system
+
+  require get_theme_file_path('/includes/like-route.php'); 
   require get_theme_file_path('/includes/search-route.php');
   
   // here adding custom fields to the rest api
@@ -50,7 +52,7 @@
   <?php }
 
   function universityFiles() {
-    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=need-key', '1.0', microtime(), true);
+    wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=AIzaSyD6TbbxH1PAl040d0TXpCJTZasnxjR1YgM', '1.0', microtime(), true);
     // microtime() is a trick for dealing with caching issues
     wp_enqueue_script('mainUniversityJs', get_theme_file_uri('/js/scripts-bundled.js'), NULL, microtime(), true);
     // loading a stylesheet
@@ -113,7 +115,7 @@
   add_action('pre_get_posts', 'universityAdjustmentQueries');
 
   function universityMapKey($key) {
-    $api['key'] = 'need key';
+    $api['key'] = 'AIzaSyD6TbbxH1PAl040d0TXpCJTZasnxjR1YgM';
     $api['libraries'] = 'places';
     return $api;
   }
