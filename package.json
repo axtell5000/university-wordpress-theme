@@ -27,7 +27,11 @@
     "webpack": "4.8.2"
   },
   "dependencies": {
+<<<<<<< HEAD
     "jquery": "^3.4.0",
+=======
+    "jquery": "3.4.0",
+>>>>>>> 43ed82a9469a184eb7b29254f5272dbd9e263970
     "normalize.css": "8.0.0",
     "slick-carousel": "1.8.1"
   }
